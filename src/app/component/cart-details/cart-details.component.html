@@ -1,0 +1,147 @@
+<header class="pt-5">
+  <div class="row align-items-center">
+    <div class="col-md-4">
+      <h1>Kali</h1>
+    </div>
+    <div class="col-md-4">
+      <div class="text-center">
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        <span>BACK</span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="text-end">
+        <button class="position-relative button-style" (click)="deleteCount()">
+          <i class="fa-solid fa-lock fa-xl">
+          </i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{count}}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="row justify-content-center align-items-center "
+    *ngFor="let card of cards | paginate: { itemsPerPage: 1, currentPage: page  }">
+    <!-- ModalContent -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Video</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <youtube-player videoId="j2zYw9p5Xbg" suggestedQuality="highres" [height]="345" [width]="420"
+              [startSeconds]="4" [endSeconds]="8">
+            </youtube-player>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-4">
+        <p>{{card.category}}</p>
+        <h2 class="py-2 ">{{card.title}}</h2>
+        <p class="py-5 ">{{card.description}}</p>
+        <ul class="d-flex gap-1 pt-4 img-list">
+          <div *ngIf="card && !color; else test2" class="d-flex gap-1 pt-4 ">
+            <li class="w-25" *ngFor="let img of card.colors[0].images; let i =index" (click)="selectImg(i)">
+              <img [src]="img" alt="" class="w-100 " (click)="getImgSrc($event)">
+            </li>
+          </div>
+          <ng-template #test2>
+            <li *ngFor="let img of imgSelectByHex">
+              <img [src]="img" alt="" class="w-100 " (click)="getImgSrc($event)">
+
+            </li>
+          </ng-template>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="postion-test w-75  mx-auto " *ngIf="cards && !imgCheck; else test">
+        <img [src]="card.colors[0].images[0]" alt="" class="w-100 img-fluid"
+          [ngClass]="{'animate__animated animate__rollIn' : clickCheck}">
+
+      </div>
+      <ng-template #test>
+        <div class="w-75  mx-auto postion-test">
+          <img [src]="currentSrcImg" alt="" class="w-100"
+            [ngClass]="{'animate__animated animate__bounceIn': imgCheck }">
+        </div>
+      </ng-template>
+    </div>
+    <div class="col-md-3">
+      <div class=" p-3">
+        <div class="size">
+          <h3>size</h3>
+          <ul class="d-flex justify-content-between mt-1 ">
+            <li *ngFor="let size of card.size ; let i = index" (click)="selectSize(i)" [class.check]="sizeSelect === i"
+              [ngStyle]="sizeSelect ===i ? { 'color': 'white' } : { 'color': '#000' }">
+              <span>{{size}}</span>
+            </li>
+
+          </ul>
+        </div>
+        <div class="review mt-4 d-flex justify-content-between  align-items-center ">
+          <h3>review</h3>
+          <div>
+            <ngb-rating [(rate)]="card.rate" [readonly]="true" [max]="5" />
+          </div>
+
+        </div>
+
+        <div class="price d-flex justify-content-between align-items-center mt-4">
+          <h3>price</h3>
+          <p>${{card.price}}</p>
+        </div>
+        <div class="colors mt-4">
+          <p class="mb-2 ">COLOR</p>
+          <ul class="d-flex justify-content-between">
+            <li *ngFor="let hex of card.colors; let i = index" [style.background]="hex.hex"
+              [class.loader]="selectedItem === i" (click)="selectItem(i)" (click)="getImgByhexColor(hex.images)"></li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="px-5 ">
+  <div class="mx-auto ">
+    <div class="row align-items-center">
+      <div class="col-md-4">
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <i class="fa-solid fa-circle-play ">
+            play video
+          </i>
+        </button>
+
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex justify-content-center align-items-center">
+          <pagination-controls (pageChange)="page = $event" (click)="getClick($event)"></pagination-controls>
+
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex justify-content-end align-items-center">
+          <button class="btn btn-dark text-white me-3" (click)="increaseCount()">Add to Cart</button>
+          <i class="fa-solid fa-heart"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
